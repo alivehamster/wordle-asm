@@ -41,11 +41,11 @@ _start:
   mov %rax, %r12
 
   #### Testing ####
-  mov $1, %rax          # sys call for write
-  mov $1, %rdi          # set fd which is 1 for stdout
-  mov %r12, %rsi    # set buffer address
-  mov $6, %rdx         # set msg size
-  syscall
+  # mov $1, %rax          # sys call for write
+  # mov $1, %rdi          # set fd which is 1 for stdout
+  # mov %r12, %rsi    # set buffer address
+  # mov $6, %rdx         # set msg size
+  # syscall
   #### End Testing ####
 
   movq $5, %r13 # loop 5 times
