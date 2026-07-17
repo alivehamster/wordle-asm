@@ -16,6 +16,10 @@ embedded_file_end:
     .ascii "5 tries to guess the word 5 letter word\n"
   welcome_len = . - welcome
 
+  correct_txt:
+    .ascii "You guessed the word correctly!\n"
+  correct_len = . - correct_txt
+
   count:
     .ascii " /5: "
 
@@ -100,6 +104,11 @@ end_fail:
   syscall
 
 correct:
+  mov $1, %rax          # sys call for write
+  mov $1, %rdi          # stdout
+  leaq correct_txt(%rip), %rsi
+  mov $correct_len, %rdx         # set msg size
+  syscall
   mov $60, %rax         # exit
   mov $0, %rdi          # exit status
   syscall

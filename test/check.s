@@ -2,11 +2,11 @@
 
 .section .data
   word:
-    .ascii "vowed\n"
+    .ascii "laugh\n"
   word_len = . - word
 
   tmp:
-    .ascii "wafer\n"
+    .ascii "hello\n"
   tmp_len = . - tmp
 
 .section .bss
@@ -58,9 +58,11 @@ continue:
 word_loop:
   cmpq $5, %r8
   jge continue
-  incq %r8
 
   movb (%rax,%r8,1), %dl
+
+  incq %r8
+
   cmpb %r11b, %dl
   jne word_loop
 

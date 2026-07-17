@@ -2,6 +2,10 @@
   buffer:
     .space 6
 
+# .section .data
+#   tmp:
+#     .ascii "laugh\n"
+
 .section .text
 .global check
 .global word_select
@@ -46,9 +50,10 @@ continue:
 word_loop:
   cmpq $5, %r8
   jge continue
+  movb (%r12,%r8,1), %dl
+
   incq %r8
 
-  movb (%r12,%r8,1), %dl
   cmpb %r11b, %dl
   jne word_loop
 
@@ -64,8 +69,11 @@ word_select:
   call random_number
 
   imulq $6, %rax, %rax
-  leaq embedded_file_start(%rip), %r10   # 1. Get the dynamic base address of the file via RIP
-  addq %r10, %rax                        # 2. Add your offset (%rax) to that base address
+  leaq embedded_file_start(%rip), %r10
+  addq %r10, %rax
+
+  # leaq tmp(%rip), %rax # Debug: Overwrite random word with tmp word
+
   ret
   
 
