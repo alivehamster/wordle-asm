@@ -13,7 +13,7 @@ embedded_file_end:
 
 .section .data
   welcome:
-    .ascii "5 tries to guess the word 5 letter word\n"
+    .ascii "6 tries to guess the word 5 letter word\n"
   welcome_len = . - welcome
 
   correct_txt:
@@ -21,7 +21,7 @@ embedded_file_end:
   correct_len = . - correct_txt
 
   count:
-    .ascii " /5: "
+    .ascii " /6: "
 
   fail_txt:
     .ascii "You failed to guess the word      \n"
@@ -52,11 +52,11 @@ _start:
   # syscall
   #### End Testing ####
 
-  movq $5, %r13 # loop 5 times
+  movq $6, %r13 # loop 6 times
 answer_loop:
 
   leaq count(%rip), %rsi
-  movq $54, %rax
+  movq $55, %rax
   subq %r13, %rax
   movb %al, (%rsi)
 
