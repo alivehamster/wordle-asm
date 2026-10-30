@@ -124,14 +124,17 @@ valid_length:
 
 clearstdin:
   # read one byte at a time until newline or EOF
+  push %rax
+drain:
   mov $0, %rax          # sys call for read
   mov $0, %rdi          # stdin
-  leaq buffer(%rip), %rsi      # set buffer address
+  mov %rsp, %rsi        # set buffer address
   mov $1, %rdx          # one byte
   syscall
   cmpq $1, %rax
   jne drained
-  cmpb $'\n', buffer(%rip)
-  jne clearstdin
+  cmpb $'\n', (%rsp)
+  jne drain
 drained:
+  pop %rax
   ret
