@@ -29,7 +29,7 @@ embedded_file_end:
 
 .section .bss
   input:
-    .space 6
+    .space 7
 
 .section .text
 _start:
@@ -54,7 +54,6 @@ _start:
 
   movq $6, %r13 # loop 6 times
 answer_loop:
-
   leaq count(%rip), %rsi
   movq $55, %rax
   subq %r13, %rax
@@ -68,8 +67,12 @@ answer_loop:
   mov $0, %rax          # sys call for read
   mov $0, %rdi          # stdin
   leaq input(%rip), %rsi      # set buffer address
-  mov $6, %rdx          # set msg size
+  mov $7, %rdx          # set msg size
   syscall
+
+  call lengthcheck
+  cmpb $1, %dil
+  je answer_loop
 
   leaq input(%rip), %rax
   call check

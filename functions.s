@@ -1,7 +1,10 @@
 .section .bss
   buffer:
     .space 6
-
+.section .data
+  invalid_txt:
+    .ascii "Invalid input, please enter a 5 letter word\n"
+  invalid_len = . - invalid_txt
 # .section .data
 #   tmp:
 #     .ascii "laugh\n"
@@ -9,6 +12,7 @@
 .section .text
 .global check
 .global word_select
+.global lengthcheck
 
 check:
   leaq buffer(%rip), %rsi # set buffer address
@@ -92,4 +96,42 @@ random_number:
 
   # 5. Move the result to %rax to return it
   movq    %rdx, %rax
+  ret
+
+lengthcheck:
+  # input is 7 bytes read; %rsi still points at it, %rax is bytes read
+  cmpq $6, %rax
+  jne invalid_length
+  cmpb $'\n', 5(%rsi)
+  je valid_length
+
+invalid_length:
+  # drain only if the line's newline has not been consumed yet
+  testq %rax, %rax
+  jle report_invalid
+  cmpb $'\n', -1(%rsi,%rax,1)
+  je report_invalid
+  call clearstdin
+
+report_invalid:
+  mov $1, %rax          # sys call for write
+  mov $1, %rdi          # stdout
+  leaq invalid_txt(%rip), %rsi
+  mov $invalid_len, %rdx         # set msg size
+  syscall
+valid_length:
+  ret
+
+clearstdin:
+  # read one byte at a time until newline or EOF
+  mov $0, %rax          # sys call for read
+  mov $0, %rdi          # stdin
+  leaq buffer(%rip), %rsi      # set buffer address
+  mov $1, %rdx          # one byte
+  syscall
+  cmpq $1, %rax
+  jne drained
+  cmpb $'\n', buffer(%rip)
+  jne clearstdin
+drained:
   ret
